@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Girlfriend Day</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: radial-gradient(circle at center, #fff0f5, #ffe0e9);
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+      text-align: center;
+      color: #d81b60;
+      overflow-x: hidden;
+    }
+
+    h1 {
+      font-size: 2em;
+      margin-bottom: 10px;
+    }
+
+    #counter {
+      font-size: 1em;
+      margin-bottom: 30px;
+      color: #ad1457;
+    }
+
+    #gift {
+      font-size: 8rem;
+      cursor: pointer;
+      transition: transform 0.2s ease-in-out;
+      animation: float 2s infinite ease-in-out;
+      user-select: none;
+    }
+
+    #gift.tapped {
+      animation: shake 0.3s ease;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0); }
+    }
+
+    @keyframes shake {
+      0% { transform: rotate(0); }
+      25% { transform: rotate(8deg); }
+      50% { transform: rotate(-8deg); }
+      75% { transform: rotate(5deg); }
+      100% { transform: rotate(0); }
+    }
+
+    #message {
+      display: none;
+      max-width: 90%;
+      width: 100%;
+      padding: 20px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      margin-top: 30px;
+      animation: popIn 1s ease;
+      font-size: 1.1em;
+      z-index: 2;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.2); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .burst {
+      position: absolute;
+      font-size: 1.5em;
+      animation: boom 1s ease forwards;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    @keyframes boom {
+      0% { opacity: 1; transform: scale(1) translate(0, 0); }
+      100% { opacity: 0; transform: scale(2) translate(var(--x), var(--y)); }
+    }
+
+    .floating {
+      position: absolute;
+      font-size: 1.5rem;
+      opacity: 0.6;
+      animation: floaty 10s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes floaty {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-120vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* Responsive Enhancements */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 1.5em;
+      }
+
+      #gift {
+        font-size: 5rem;
+      }
+
+      #message {
+        font-size: 1em;
+        padding: 15px;
+      }
+
+      .burst {
+        font-size: 1.2em;
+      }
+
+      .floating {
+        font-size: 1.2rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.2em;
+      }
+
+      #gift {
+        font-size: 4rem;
+      }
+
+      #message {
+        font-size: 0.95em;
+        padding: 10px;
+      }
+
+      .burst {
+        font-size: 1em;
+      }
+
+      .floating {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Tap Boxnya BUBELLLL!!</h1>
+  <div id="counter">0 / 5 taps</div>
+  <div id="gift">🎁</div>
+  <div id="message"></div>
+
+  <!-- Floating Background Decorations -->
+  <script>
+    const body = document.body;
+    const emojis = ['❤️','💖','✨','🌸','💕'];
+    for (let i = 0; i < 30; i++) {
+      const float = document.createElement('div');
+      float.className = 'floating';
+      float.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+      float.style.left = Math.random() * 100 + 'vw';
+      float.style.animationDuration = 3 + Math.random() * 3 + 's';
+      float.style.fontSize = (0.8 + Math.random() * 1.2) + 'rem';
+      body.appendChild(float);
+    }
+  </script>
+
+  <script>
+    const gift = document.getElementById('gift');
+    const counter = document.getElementById('counter');
+    const message = document.getElementById('message');
+    let tapCount = 0;
+    const maxTaps = 5;
+
+    gift.addEventListener('click', (e) => {
+      tapCount++;
+      counter.innerText = `${tapCount} / ${maxTaps} taps`;
+
+      gift.classList.add('tapped');
+      setTimeout(() => gift.classList.remove('tapped'), 200);
+
+      for (let i = 0; i < 5; i++) {
+        createBurst(e.clientX, e.clientY);
+      }
+
+      if (tapCount === maxTaps) {
+        explodeGift();
+      }
+    });
+
+    function createBurst(x, y) {
+      const burst = document.createElement('div');
+      burst.className = 'burst';
+      burst.innerText = ['💖', '💥', '✨', '❤️', '🌸'][Math.floor(Math.random() * 5)];
+      burst.style.left = x + 'px';
+      burst.style.top = y + 'px';
+      burst.style.setProperty('--x', `${(Math.random() - 0.5) * 150}px`);
+      burst.style.setProperty('--y', `${(Math.random() - 0.5) * 150}px`);
+      document.body.appendChild(burst);
+      setTimeout(() => burst.remove(), 1000);
+    }
+
+    function explodeGift() {
+      gift.style.display = 'none';
+      counter.style.display = 'none';
+      message.style.display = 'block';
+      message.innerHTML = `
+        💌 <b>DUARRR!</b><br><br>
+        Happy Girlfriend Day, cayang acuuuu cewe acuu imup acuuuu!!<br><br>
+        Today is special because of you. Thank you for being there, so patient with me, and always encouraging and caring, even when I can be annoying.<br><br>
+        I know I'm not perfect, I still have many shortcomings, but you're still there and continue to support me. That's something I never take for granted.<br><br>
+        You're not just a girlfriend, but also a friend, a listener, and someone who makes my days feel lighter. I'm so grateful to be with you.<br><br>
+        I hope you're always happy, and know that there's someone who always loves and cares for you: me.<br><br>
+        Once again, Happy Girlfriends Day my sweetie pieee.<br><br>
+        — Miko
+      `;
+    }
+  </script>
+</body>
+</html>
